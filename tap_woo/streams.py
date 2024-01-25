@@ -273,8 +273,8 @@ class ProductsStream(wooStream):
     name = "products"
     path = "/products"
     primary_keys: t.ClassVar[list[str]]
-    # replication_key = "date_modified_gmt"
-    # is_sorted = False
+    replication_key = "date_modified_gmt"
+    is_sorted = False
 
     schema = th.PropertiesList(
         th.Property("id", th.IntegerType),
