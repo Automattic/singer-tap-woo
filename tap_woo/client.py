@@ -77,28 +77,6 @@ class wooStream(RESTStream):
         """
         return super().get_new_paginator()
 
-    def get_url_params(
-        self,
-        context: dict | None,  # noqa: ARG002
-        next_page_token: Any | None,  # noqa: ANN401
-    ) -> dict[str, Any]:
-        """Return a dictionary of values to be used in URL parameterization.
-
-        Args:
-            context: The stream context.
-            next_page_token: The next page index or value.
-
-        Returns:
-            A dictionary of URL query parameters.
-        """
-        params: dict = {}
-        if next_page_token:
-            params["page"] = next_page_token
-        if self.replication_key:
-            params["sort"] = "asc"
-            params["order_by"] = self.replication_key
-        return params
-
     def prepare_request_payload(
         self,
         context: dict | None,  # noqa: ARG002
@@ -160,3 +138,7 @@ class wooStream(RESTStream):
         self.logger.info(f"URL params: {params}")
         return params
 
+    def get_url(self, context):
+        url = super().get_url(context)
+        self.logger.info(f"URL: {url}")
+        return url
