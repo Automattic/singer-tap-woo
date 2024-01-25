@@ -1,0 +1,21 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            # Replace tap_foobar below with the actual name of your custom extractors library
+            "program": "${workspaceRoot}/tap_woo/tap.py",
+            "console": "integratedTerminal",
+            "args": ["--config", ".secrets/config.json"],
+            "env": { "PYTHONPATH": "${workspaceRoot}"},
+            # Change this to false if you wish to debug and add breakpoints outside of your code e.g. the singer-sdk package
+            "justMyCode": true
+
+        }
+    ]
+}
+
+
+
