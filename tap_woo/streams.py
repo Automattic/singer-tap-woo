@@ -588,6 +588,26 @@ class SubscriptionsStream(wooStream):
         th.Property("removed_line_items", th.ArrayType(th.IntegerType))
     ).to_dict()
 
+    def get_child_context(self, record: dict, context: Optional[dict]) -> dict:
+        """Return a context dictionary for child streams."""
+        return {
+                "subscription_id": record["id"],
+            }
+
+
+class SubscriptionOrdersStream(wooStream):
+    name = "subscription_orders"
+    path = "/subscriptions/{subscription_id}/orders"
+    primary_keys = ["subscription_id"]
+    parent_stream_type = SubscriptionsStream
+
+    schema = th.PropertiesList(
+        th.Property("subscription_id", th.IntegerType), # This seems to come from the parent stream, although I dont understand how
+        th.Property("order_id", th.IntegerType),
+    ).to_dict()
+
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
-        self.logger.info(f"Post processing row: {row}")
+        # Rename the id field to order_id
+        row["order_id"] = row["id"]
+        del row["id"]
         return super().post_process(row, context)
