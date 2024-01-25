@@ -51,7 +51,6 @@ class Tapwoo(Tap):
         return [
             streams.ProductsStream(tap=self),
             streams.OrdersStream(tap=self),
-            streams.RefundsStream(tap=self),
             
             # streams.CouponsStream(tap=self),
             # streams.CustomersStream(tap=self),
