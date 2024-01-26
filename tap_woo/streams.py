@@ -225,7 +225,7 @@ class RefundsStream(wooStream):
             th.ObjectType(
                 th.Property("id", th.IntegerType),
                 th.Property("key", th.StringType),
-                th.Property("value", th.CustomType({"type": ["string", "null"]})),
+                th.Property("value", th.CustomType({"type": ["string", "null", "array", "object"]})),
             )
         )),
         th.Property("line_items", th.ArrayType(
@@ -255,7 +255,7 @@ class RefundsStream(wooStream):
                     th.ObjectType(
                         th.Property("id", th.IntegerType),
                         th.Property("key", th.StringType),
-                        th.Property("value", th.StringType),
+                        th.Property("value", th.CustomType({"type": ["string", "null", "array", "object"]})),
                     )
                 )),
                 th.Property("sku", th.CustomType({"type": ["boolean", "string"]})),
@@ -407,7 +407,7 @@ class ProductsStream(wooStream):
                 th.ObjectType(
                     th.Property("id", th.IntegerType),
                     th.Property("key", th.StringType),
-                    th.Property("value", th.CustomType({"type": ["string", "null"]})),
+                    th.Property("value", th.CustomType({"type": ["string", "null", "array", "object"]})),
                 )
             ),
         ),
@@ -477,7 +477,7 @@ class SubscriptionsStream(wooStream):
             th.ObjectType(
                 th.Property("id", th.IntegerType),
                 th.Property("key", th.StringType),
-                th.Property("value", th.CustomType({"type": ["string", "null", "array"]})),
+                th.Property("value", th.CustomType({"type": ["string", "null", "array", "object"]})),
             )
         )),
         th.Property("line_items", th.ArrayType(
@@ -507,7 +507,7 @@ class SubscriptionsStream(wooStream):
                     th.ObjectType(
                         th.Property("id", th.IntegerType),
                         th.Property("key", th.StringType),
-                        th.Property("value", th.CustomType({"type": ["string", "null"]})),
+                        th.Property("value", th.CustomType({"type": ["string", "null", "array", "object"]})),
                     )
                 )),
                 th.Property("sku", th.CustomType({"type": ["boolean", "string"]})),
