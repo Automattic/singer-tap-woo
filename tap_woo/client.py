@@ -32,8 +32,8 @@ class wooStream(RESTStream):
 
     records_jsonpath = "$[*]"  # Or override `parse_response`.
 
-    # Set this value or override `get_new_paginator`.
-    next_page_token_jsonpath = "$.next_page"  # noqa: S105
+    # # Set this value or override `get_new_paginator`.
+    # next_page_token_jsonpath = "$.page"  # noqa: S105
 
     @property
     def authenticator(self) -> BasicAuthenticator:
@@ -126,7 +126,11 @@ class wooStream(RESTStream):
         return row
     
     def get_url_params(self, context, next_page_token):
-        params = {}
+        self.logger.info(f"Next page token: {next_page_token}")
+        params = {
+            "per_page": 100,
+            "order": "asc",
+            }
 
         starting_date = self.get_starting_timestamp(context)
         if starting_date:
@@ -142,3 +146,25 @@ class wooStream(RESTStream):
         url = super().get_url(context)
         self.logger.info(f"URL: {url}")
         return url
+
+    def get_next_page_token(
+        self, response: requests.Response, previous_token: Optional[Any]
+    ) -> Optional[Any]:
+        """Return a token for identifying next page or None if no more pages."""
+        # Get the total pages header
+        total_pages = response.headers.get("X-WP-TotalPages")
+        # If the response is an error, we want to retry the request
+        if response.status_code >= 400:
+            previous_token = previous_token or 1
+            total_pages = previous_token + 1
+
+        if total_pages is None:
+            return None
+
+        if previous_token is None:
+            return 2
+
+        if int(total_pages) > previous_token:
+            return previous_token + 1
+
+        return None
