@@ -215,7 +215,7 @@ class RefundsStream(wooStream):
 
     schema = th.PropertiesList(
         th.Property("id", th.IntegerType),
-        th.Property("date_created", th.DateTimeType),
+        th.Property("original_order_id", th.IntegerType),
         th.Property("date_created_gmt", th.DateTimeType),
         th.Property("amount", th.StringType),
         th.Property("reason", th.StringType),
@@ -263,6 +263,12 @@ class RefundsStream(wooStream):
             )
         )),
     ).to_dict()
+
+    def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        # Add in the original order id
+        row["original_order_id"] = context["order_id"]
+        return super().post_process(row, context)
+
             
 
 
