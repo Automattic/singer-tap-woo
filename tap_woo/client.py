@@ -158,7 +158,7 @@ class wooStream(RESTStream):
             previous_token = previous_token or 1
             total_pages = previous_token + 1
 
-        if total_pages is None:
+        if total_pages is None or int(total_pages) <= 1:
             return None
 
         if previous_token is None:
