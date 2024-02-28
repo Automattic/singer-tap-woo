@@ -8,7 +8,8 @@ from tap_woo.tap import Tapwoo
 
 SAMPLE_CONFIG = {
     "start_date": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d"),
-    # TODO: Initialize minimal tap config
+    "consumer_key": "your_consumer_key",
+    "consumer_secret": "your_consumer_secret",
 }
 
 
