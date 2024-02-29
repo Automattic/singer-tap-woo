@@ -7,7 +7,10 @@ from urllib.parse import urljoin
 
 import requests
 from singer_sdk.authenticators import BasicAuthenticator
-from singer_sdk.pagination import SimpleHeaderPaginator, BaseAPIPaginator  # noqa: TCH002
+from singer_sdk.pagination import (
+    SimpleHeaderPaginator,
+    BaseAPIPaginator,
+)  # noqa: TCH002
 from singer_sdk.streams import RESTStream
 
 _Auth = Callable[[requests.PreparedRequest], requests.PreparedRequest]
@@ -33,13 +36,13 @@ class wooStream(RESTStream):
             username=self.config.get("consumer_key", ""),
             password=self.config.get("consumer_secret", ""),
         )
-    
+
     def get_url_params(self, context, next_page_token):
         self.logger.debug(f"Next page token: {next_page_token}")
         params = {
             "per_page": 100,
             "order": "asc",
-            }
+        }
 
         starting_date = self.get_starting_timestamp(context)
         if starting_date:
