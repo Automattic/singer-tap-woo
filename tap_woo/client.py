@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from typing import Callable
+from urllib.parse import urljoin
 
 import requests
 from singer_sdk.authenticators import BasicAuthenticator
@@ -18,7 +19,7 @@ class wooStream(RESTStream):
     @property
     def url_base(self) -> str:
         """Return the API URL root, configurable via tap settings."""
-        return self.config.get("api_url", "") + 'wp-json/wc/v3'
+        return urljoin(self.config["api_url"], 'wp-json/wc/v3')
 
     @property
     def authenticator(self) -> BasicAuthenticator:

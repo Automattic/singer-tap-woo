@@ -14,7 +14,6 @@ class Tapwoo(Tap):
 
     name = "tap-woo"
 
-    # TODO: Update this section with the actual config values you expect:
     config_jsonschema = th.PropertiesList(
         th.Property(
             "consumer_key",
