@@ -1,6 +1,6 @@
 ### A CI workflow template that runs linting and python testing
 
-name: Test tap-upwork
+name: Test tap-woo
 
 on: [push]
 
@@ -45,7 +45,7 @@ jobs:
         poetry install
     - name: Running pylint
       run: |
-        poetry run pylint tap_upwork
+        poetry run pylint tap_woo
     - name: Running black formatter check
       run: |
         poetry run black --check --diff --skip-string-normalization .
