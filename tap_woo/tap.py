@@ -34,6 +34,11 @@ class Tapwoo(Tap):
             description="The earliest record date to sync",
         ),
         th.Property(
+            "end_date",
+            th.DateTimeType,
+            description="The latest record date to sync (if not set will sync up to current date)",
+        ),
+        th.Property(
             "api_url",
             th.StringType,
             default="https://api.mysample.com",

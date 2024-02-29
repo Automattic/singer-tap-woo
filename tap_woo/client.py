@@ -2,9 +2,11 @@
 
 from __future__ import annotations
 
-from typing import Callable
+from datetime import datetime
+from typing import Callable, cast
 from urllib.parse import urljoin
 
+import pendulum
 import requests
 from singer_sdk.authenticators import BasicAuthenticator
 from singer_sdk.pagination import (
@@ -47,6 +49,9 @@ class wooStream(RESTStream):
         starting_date = self.get_starting_timestamp(context)
         if starting_date:
             params["modified_after"] = starting_date
+        end_date = self.config.get("end_date")
+        if end_date:
+            params["modified_before"] = cast(datetime, pendulum.parse(end_date))
 
         if next_page_token is not None:
             params["page"] = next_page_token
