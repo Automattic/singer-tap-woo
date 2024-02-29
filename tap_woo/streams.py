@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import sys
 import typing as t
 from typing import Optional
 
@@ -10,10 +9,52 @@ from singer_sdk import typing as th  # JSON Schema typing helpers
 
 from tap_woo.client import wooStream
 
-if sys.version_info >= (3, 9):
-    import importlib.resources as importlib_resources
-else:
-    import importlib_resources
+
+METADATA_FIELD_SCHEMA = th.Property(
+            "meta_data",
+            th.ArrayType(
+                th.ObjectType(
+                    th.Property("id", th.IntegerType),
+                    th.Property("key", th.StringType),
+                    th.Property("value",th.StringType,),
+                )
+            ),
+        )
+
+
+BILLING_FIELD_SCHEMA = th.Property(
+            "billing",
+            th.ObjectType(
+                th.Property("first_name", th.StringType),
+                th.Property("last_name", th.StringType),
+                th.Property("company", th.StringType),
+                th.Property("address_1", th.StringType),
+                th.Property("address_2", th.StringType),
+                th.Property("city", th.StringType),
+                th.Property("state", th.StringType),
+                th.Property("postcode", th.StringType),
+                th.Property("country", th.StringType),
+                th.Property("email", th.StringType),
+                th.Property("phone", th.StringType),
+            ),
+        )
+
+
+SHIPPING_FIELD_SCHEMA = th.Property(
+            "shipping",
+            th.ObjectType(
+                th.Property("first_name", th.StringType),
+                th.Property("last_name", th.StringType),
+                th.Property("company", th.StringType),
+                th.Property("address_1", th.StringType),
+                th.Property("address_2", th.StringType),
+                th.Property("city", th.StringType),
+                th.Property("state", th.StringType),
+                th.Property("postcode", th.StringType),
+                th.Property("country", th.StringType),
+            ),
+        )
+
 
 
 class OrdersStream(wooStream):
@@ -51,36 +92,8 @@ class OrdersStream(wooStream):
         th.Property("customer_ip_address", th.StringType),
         th.Property("customer_user_agent", th.StringType),
         th.Property("customer_note", th.StringType),
-        th.Property(
-            "billing",
-            th.ObjectType(
-                th.Property("first_name", th.StringType),
-                th.Property("last_name", th.StringType),
-                th.Property("company", th.StringType),
-                th.Property("address_1", th.StringType),
-                th.Property("address_2", th.StringType),
-                th.Property("city", th.StringType),
-                th.Property("state", th.StringType),
-                th.Property("postcode", th.StringType),
-                th.Property("country", th.StringType),
-                th.Property("email", th.StringType),
-                th.Property("phone", th.StringType),
-            ),
-        ),
-        th.Property(
-            "shipping",
-            th.ObjectType(
-                th.Property("first_name", th.StringType),
-                th.Property("last_name", th.StringType),
-                th.Property("company", th.StringType),
-                th.Property("address_1", th.StringType),
-                th.Property("address_2", th.StringType),
-                th.Property("city", th.StringType),
-                th.Property("state", th.StringType),
-                th.Property("postcode", th.StringType),
-                th.Property("country", th.StringType),
-            ),
-        ),
+        BILLING_FIELD_SCHEMA,
+        SHIPPING_FIELD_SCHEMA,
         th.Property("payment_method", th.StringType),
         th.Property("payment_method_title", th.StringType),
         th.Property("transaction_id", th.StringType),
@@ -107,9 +120,7 @@ class OrdersStream(wooStream):
                         "taxes",
                         th.ArrayType(
                             th.ObjectType(
-                                th.Property(
-                                    "id", th.CustomType({"type": ["integer", "string"]})
-                                ),
+                                th.Property("id", th.IntegerType),
                                 th.Property("rate_code", th.StringType),
                                 th.Property("rate_id", th.IntegerType),
                                 th.Property("label", th.StringType),
@@ -119,7 +130,7 @@ class OrdersStream(wooStream):
                             )
                         ),
                     ),
-                    th.Property("sku", th.CustomType({"type": ["boolean", "string"]})),
+                    th.Property("sku", th.BooleanType),
                     th.Property("price", th.NumberType),
                 ),
             ),
@@ -177,9 +188,7 @@ class OrdersStream(wooStream):
                         "taxes",
                         th.ArrayType(
                             th.ObjectType(
-                                th.Property(
-                                    "id", th.CustomType({"type": ["integer", "string"]})
-                                ),
+                                th.Property("id", th.IntegerType),
                                 th.Property("rate_code", th.StringType),
                                 th.Property("rate_id", th.IntegerType),
                                 th.Property("label", th.StringType),
@@ -198,9 +207,7 @@ class OrdersStream(wooStream):
                 th.ObjectType(
                     th.Property("id", th.IntegerType),
                     th.Property("code", th.StringType),
-                    th.Property(
-                        "discount", th.CustomType({"type": ["string", "number"]})
-                    ),
+                    th.Property("discount", th.StringType),
                     th.Property("discount_tax", th.StringType),
                 ),
             ),
@@ -228,19 +235,7 @@ class RefundsStream(wooStream):
         th.Property("reason", th.StringType),
         th.Property("refunded_by", th.IntegerType),
         th.Property("refunded_payment", th.BooleanType),
-        th.Property(
-            "meta_data",
-            th.ArrayType(
-                th.ObjectType(
-                    th.Property("id", th.IntegerType),
-                    th.Property("key", th.StringType),
-                    th.Property(
-                        "value",
-                        th.CustomType({"type": ["string", "null", "array", "object"]}),
-                    ),
-                )
-            ),
-        ),
+        METADATA_FIELD_SCHEMA,
         th.Property(
             "line_items",
             th.ArrayType(
@@ -259,9 +254,7 @@ class RefundsStream(wooStream):
                         "taxes",
                         th.ArrayType(
                             th.ObjectType(
-                                th.Property(
-                                    "id", th.CustomType({"type": ["integer", "string"]})
-                                ),
+                                th.Property("id", th.IntegerType),
                                 th.Property("rate_code", th.StringType),
                                 th.Property("rate_id", th.IntegerType),
                                 th.Property("label", th.StringType),
@@ -271,22 +264,8 @@ class RefundsStream(wooStream):
                             )
                         ),
                     ),
-                    th.Property(
-                        "meta_data",
-                        th.ArrayType(
-                            th.ObjectType(
-                                th.Property("id", th.IntegerType),
-                                th.Property("key", th.StringType),
-                                th.Property(
-                                    "value",
-                                    th.CustomType(
-                                        {"type": ["string", "null", "array", "object"]}
-                                    ),
-                                ),
-                            )
-                        ),
-                    ),
-                    th.Property("sku", th.CustomType({"type": ["boolean", "string"]})),
+                    METADATA_FIELD_SCHEMA,
+                    th.Property("sku", th.BooleanType),
                     th.Property("price", th.NumberType),
                 )
             ),
@@ -319,7 +298,7 @@ class ProductsStream(wooStream):
         th.Property("date_modified_gmt", th.DateTimeType),
         th.Property("date_on_sale_from_gmt", th.DateTimeType),
         th.Property("date_on_sale_to_gmt", th.DateTimeType),
-        th.Property("low_stock_amount", th.CustomType({"type": ["string", "number"]})),
+        th.Property("low_stock_amount", th.StringType),
         th.Property("type", th.StringType),
         th.Property("status", th.StringType),
         th.Property("featured", th.BooleanType),
@@ -327,19 +306,19 @@ class ProductsStream(wooStream):
         th.Property("description", th.StringType),
         th.Property("short_description", th.StringType),
         th.Property("sku", th.StringType),
-        th.Property("brands", th.CustomType({"type": ["array", "string"]})),
-        th.Property("price", th.CustomType({"type": ["string", "number"]})),
-        th.Property("regular_price", th.CustomType({"type": ["string", "number"]})),
-        th.Property("sale_price", th.CustomType({"type": ["string", "number"]})),
+        th.Property("brands", th.ArrayType(th.StringType)),
+        th.Property("price", th.StringType),
+        th.Property("regular_price", th.StringType),
+        th.Property("sale_price", th.StringType),
         th.Property("date_on_sale_from", th.DateTimeType),
         th.Property("date_on_sale_to", th.DateTimeType),
         th.Property("price_html", th.StringType),
         th.Property("on_sale", th.BooleanType),
         th.Property("purchasable", th.BooleanType),
-        th.Property("total_sales", th.CustomType({"type": ["string", "number"]})),
+        th.Property("total_sales", th.NumberType),
         th.Property("virtual", th.BooleanType),
         th.Property("downloadable", th.BooleanType),
-        th.Property("downloads", th.CustomType({"type": ["object", "array"]})),
+        th.Property("downloads", th.ArrayType(th.StringType)),
         th.Property("download_limit", th.IntegerType),
         th.Property("download_expiry", th.IntegerType),
         th.Property("external_url", th.StringType),
@@ -371,7 +350,7 @@ class ProductsStream(wooStream):
         th.Property("rating_count", th.IntegerType),
         th.Property("related_ids", th.ArrayType(th.IntegerType)),
         th.Property("upsell_ids", th.ArrayType(th.IntegerType)),
-        th.Property("cross_sell_ids", th.CustomType({"type": ["object", "array"]})),
+        th.Property("cross_sell_ids", th.ArrayType(th.IntegerType)),
         th.Property("parent_id", th.IntegerType),
         th.Property("purchase_note", th.StringType),
         th.Property(
@@ -433,19 +412,7 @@ class ProductsStream(wooStream):
         th.Property("variations", th.ArrayType(th.IntegerType)),
         th.Property("grouped_products", th.ArrayType(th.IntegerType)),
         th.Property("menu_order", th.IntegerType),
-        th.Property(
-            "meta_data",
-            th.ArrayType(
-                th.ObjectType(
-                    th.Property("id", th.IntegerType),
-                    th.Property("key", th.StringType),
-                    th.Property(
-                        "value",
-                        th.CustomType({"type": ["string", "null", "array", "object"]}),
-                    ),
-                )
-            ),
-        ),
+        METADATA_FIELD_SCHEMA,
     ).to_dict()
 
 
@@ -476,36 +443,8 @@ class SubscriptionsStream(wooStream):
         th.Property("total_tax", th.StringType),
         th.Property("customer_id", th.IntegerType),
         th.Property("order_key", th.StringType),
-        th.Property(
-            "billing",
-            th.ObjectType(
-                th.Property("first_name", th.StringType),
-                th.Property("last_name", th.StringType),
-                th.Property("company", th.StringType),
-                th.Property("address_1", th.StringType),
-                th.Property("address_2", th.StringType),
-                th.Property("city", th.StringType),
-                th.Property("state", th.StringType),
-                th.Property("postcode", th.StringType),
-                th.Property("country", th.StringType),
-                th.Property("email", th.StringType),
-                th.Property("phone", th.StringType),
-            ),
-        ),
-        th.Property(
-            "shipping",
-            th.ObjectType(
-                th.Property("first_name", th.StringType),
-                th.Property("last_name", th.StringType),
-                th.Property("company", th.StringType),
-                th.Property("address_1", th.StringType),
-                th.Property("address_2", th.StringType),
-                th.Property("city", th.StringType),
-                th.Property("state", th.StringType),
-                th.Property("postcode", th.StringType),
-                th.Property("country", th.StringType),
-            ),
-        ),
+        BILLING_FIELD_SCHEMA,
+        SHIPPING_FIELD_SCHEMA,
         th.Property("payment_method", th.StringType),
         th.Property("payment_method_title", th.StringType),
         th.Property("customer_ip_address", th.StringType),
@@ -515,19 +454,7 @@ class SubscriptionsStream(wooStream):
         th.Property("date_completed", th.DateTimeType),
         th.Property("date_paid", th.DateTimeType),
         th.Property("number", th.StringType),
-        th.Property(
-            "meta_data",
-            th.ArrayType(
-                th.ObjectType(
-                    th.Property("id", th.IntegerType),
-                    th.Property("key", th.StringType),
-                    th.Property(
-                        "value",
-                        th.CustomType({"type": ["string", "null", "array", "object"]}),
-                    ),
-                )
-            ),
-        ),
+        METADATA_FIELD_SCHEMA,
         th.Property(
             "line_items",
             th.ArrayType(
@@ -546,9 +473,7 @@ class SubscriptionsStream(wooStream):
                         "taxes",
                         th.ArrayType(
                             th.ObjectType(
-                                th.Property(
-                                    "id", th.CustomType({"type": ["integer", "string"]})
-                                ),
+                                th.Property("id", th.IntegerType),
                                 th.Property("rate_code", th.StringType),
                                 th.Property("rate_id", th.IntegerType),
                                 th.Property("label", th.StringType),
@@ -558,22 +483,8 @@ class SubscriptionsStream(wooStream):
                             )
                         ),
                     ),
-                    th.Property(
-                        "meta_data",
-                        th.ArrayType(
-                            th.ObjectType(
-                                th.Property("id", th.IntegerType),
-                                th.Property("key", th.StringType),
-                                th.Property(
-                                    "value",
-                                    th.CustomType(
-                                        {"type": ["string", "null", "array", "object"]}
-                                    ),
-                                ),
-                            )
-                        ),
-                    ),
-                    th.Property("sku", th.CustomType({"type": ["boolean", "string"]})),
+                    METADATA_FIELD_SCHEMA,
+                    th.Property("sku", th.BooleanType),
                     th.Property("price", th.NumberType),
                 )
             ),
@@ -631,9 +542,7 @@ class SubscriptionsStream(wooStream):
                         "taxes",
                         th.ArrayType(
                             th.ObjectType(
-                                th.Property(
-                                    "id", th.CustomType({"type": ["integer", "string"]})
-                                ),
+                                th.Property("id", th.IntegerType),
                                 th.Property("rate_code", th.StringType),
                                 th.Property("rate_id", th.IntegerType),
                                 th.Property("label", th.StringType),
@@ -652,9 +561,7 @@ class SubscriptionsStream(wooStream):
                 th.ObjectType(
                     th.Property("id", th.IntegerType),
                     th.Property("code", th.StringType),
-                    th.Property(
-                        "discount", th.CustomType({"type": ["string", "number"]})
-                    ),
+                    th.Property("discount", th.StringType),
                     th.Property("discount_tax", th.StringType),
                 ),
             ),
@@ -673,6 +580,19 @@ class SubscriptionsStream(wooStream):
         th.Property("resubscribed_subscription", th.StringType),
         th.Property("removed_line_items", th.ArrayType(th.IntegerType)),
     ).to_dict()
+
+    def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        list_date_fields = [
+            'trial_end_date_gmt',
+            'next_payment_date_gmt',
+            'last_payment_date_gmt',
+            'cancelled_date_gmt',
+            'end_date_gmt'
+        ]
+        for date_time_field in list_date_fields:
+            if date_time_field in row and not row[date_time_field]:
+                del row[date_time_field]
+        return super().post_process(row, context)
 
     def get_child_context(self, record: dict, context: Optional[dict]) -> dict:
         """Return a context dictionary for child streams."""
