@@ -6,7 +6,7 @@ METADATA_FIELD_SCHEMA = th.Property(
                 th.ObjectType(
                     th.Property("id", th.IntegerType),
                     th.Property("key", th.StringType),
-                    th.Property("value",th.StringType,),
+                    th.Property("value", th.CustomType({"type": ["string", "array", "object"]})),
                 )
             ),
         )
@@ -42,6 +42,7 @@ SHIPPING_FIELD_SCHEMA = th.Property(
                 th.Property("state", th.StringType),
                 th.Property("postcode", th.StringType),
                 th.Property("country", th.StringType),
+                th.Property("phone", th.StringType),
             ),
         )
 
