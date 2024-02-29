@@ -51,7 +51,7 @@ class wooStream(RESTStream):
             params["modified_after"] = starting_date
         end_date = self.config.get("end_date")
         if end_date:
-            params["modified_before"] = cast(datetime, pendulum.parse(end_date))
+            params["modified_before"] = end_date
 
         if next_page_token is not None:
             params["page"] = next_page_token
