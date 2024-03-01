@@ -14,13 +14,13 @@ repos:
   - id: trailing-whitespace
 
 - repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 0.27.3
+  rev: 0.28.0
   hooks:
   - id: check-dependabot
   - id: check-github-workflows
 
 - repo: https://github.com/psf/black
-  rev: stable
+  rev: 24.2.0
   hooks:
     - id: black
       args: [--skip-string-normalization]
@@ -33,6 +33,6 @@ repos:
     - types-requests
 
 - repo: https://github.com/zricethezav/gitleaks
-  rev: v8.17.0
+  rev: v8.18.2
   hooks:
     - id: gitleaks

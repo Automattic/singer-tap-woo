@@ -8,9 +8,16 @@ from typing import Optional
 from singer_sdk import typing as th  # JSON Schema typing helpers
 
 from tap_woo.client import wooStream
-from tap_woo.helpers.common_fields import BILLING_FIELD_SCHEMA, SHIPPING_FIELD_SCHEMA, TAXES_FIELD_SCHEMA, \
-    TAX_LINES_FIELD_SCHEMA, SHIPPING_LINES_FIELD_SCHEMA, FEE_LINES_FIELD_SCHEMA, METADATA_FIELD_SCHEMA, \
-    LINE_ITEMS_FIELD_SCHEMA
+from tap_woo.helpers.common_fields import (
+    BILLING_FIELD_SCHEMA,
+    SHIPPING_FIELD_SCHEMA,
+    TAX_LINES_FIELD_SCHEMA,
+    SHIPPING_LINES_FIELD_SCHEMA,
+    FEE_LINES_FIELD_SCHEMA,
+    METADATA_FIELD_SCHEMA,
+    LINE_ITEMS_FIELD_SCHEMA,
+    LINKS_FIELD_SCHEMA,
+)
 
 
 class OrdersStream(wooStream):
@@ -58,26 +65,7 @@ class OrdersStream(wooStream):
         th.Property("date_completed", th.DateTimeType),
         th.Property("date_completed_gmt", th.DateTimeType),
         th.Property("cart_hash", th.StringType),
-        th.Property(
-            "line_items",
-            th.ArrayType(
-                th.ObjectType(
-                    th.Property("id", th.IntegerType),
-                    th.Property("name", th.StringType),
-                    th.Property("product_id", th.IntegerType),
-                    th.Property("variation_id", th.IntegerType),
-                    th.Property("quantity", th.NumberType),
-                    th.Property("tax_class", th.StringType),
-                    th.Property("subtotal", th.StringType),
-                    th.Property("subtotal_tax", th.StringType),
-                    th.Property("total", th.StringType),
-                    th.Property("total_tax", th.StringType),
-                    TAXES_FIELD_SCHEMA,
-                    th.Property("sku", th.BooleanType),
-                    th.Property("price", th.NumberType),
-                ),
-            ),
-        ),
+        LINE_ITEMS_FIELD_SCHEMA,
         TAX_LINES_FIELD_SCHEMA,
         SHIPPING_LINES_FIELD_SCHEMA,
         FEE_LINES_FIELD_SCHEMA,
@@ -89,9 +77,26 @@ class OrdersStream(wooStream):
                     th.Property("code", th.StringType),
                     th.Property("discount", th.StringType),
                     th.Property("discount_tax", th.StringType),
+                    METADATA_FIELD_SCHEMA,
                 ),
             ),
         ),
+        METADATA_FIELD_SCHEMA,
+        th.Property(
+            "refunds",
+            th.ArrayType(
+                th.ObjectType(
+                    th.Property("id", th.IntegerType),
+                    th.Property("reason", th.StringType),
+                    th.Property("total", th.StringType),
+                )
+            ),
+        ),
+        th.Property("payment_url", th.StringType),
+        th.Property("is_editable", th.BooleanType),
+        th.Property("needs_payment", th.BooleanType),
+        th.Property("needs_processing", th.BooleanType),
+        LINKS_FIELD_SCHEMA,
     ).to_dict()
 
     def get_child_context(self, record: dict, context: Optional[dict]) -> dict:
@@ -106,11 +111,12 @@ class RefundsStream(wooStream):
     path = "/orders/{order_id}/refunds"
     primary_keys = ["id"]
     parent_stream_type = OrdersStream
-    state_partitioning_keys = []
+    state_partitioning_keys: list[str] = []
 
     schema = th.PropertiesList(
         th.Property("id", th.IntegerType),
         th.Property("original_order_id", th.IntegerType),
+        th.Property("date_created", th.DateTimeType),
         th.Property("date_created_gmt", th.DateTimeType),
         th.Property("amount", th.StringType),
         th.Property("reason", th.StringType),
@@ -118,6 +124,10 @@ class RefundsStream(wooStream):
         th.Property("refunded_payment", th.BooleanType),
         METADATA_FIELD_SCHEMA,
         LINE_ITEMS_FIELD_SCHEMA,
+        SHIPPING_LINES_FIELD_SCHEMA,
+        TAX_LINES_FIELD_SCHEMA,
+        FEE_LINES_FIELD_SCHEMA,
+        LINKS_FIELD_SCHEMA,
     ).to_dict()
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -227,7 +237,9 @@ class ProductsStream(wooStream):
                 th.ObjectType(
                     th.Property("id", th.IntegerType),
                     th.Property("date_created", th.DateTimeType),
+                    th.Property("date_created_gmt", th.DateTimeType),
                     th.Property("date_modified", th.DateTimeType),
+                    th.Property("date_modified_gmt", th.DateTimeType),
                     th.Property("src", th.StringType),
                     th.Property("name", th.StringType),
                     th.Property("alt", th.StringType),
@@ -261,6 +273,12 @@ class ProductsStream(wooStream):
         th.Property("grouped_products", th.ArrayType(th.IntegerType)),
         th.Property("menu_order", th.IntegerType),
         METADATA_FIELD_SCHEMA,
+        th.Property("has_options", th.BooleanType),
+        # th.Property("post_password", th.StringType),  # Not sure if this is safe to extract
+        # th.Property("yoast_head", th.StringType),
+        # th.Property("yoast_head_json", th.JSONPointerType),
+        th.Property("jetpack_sharing_enabled", th.BooleanType),
+        LINKS_FIELD_SCHEMA,
     ).to_dict()
 
 
@@ -331,6 +349,12 @@ class SubscriptionsStream(wooStream):
         th.Property("resubscribed_from", th.StringType),
         th.Property("resubscribed_subscription", th.StringType),
         th.Property("removed_line_items", th.ArrayType(th.IntegerType)),
+        th.Property("payment_url", th.StringType),
+        th.Property("is_editable", th.BooleanType),
+        th.Property("needs_payment", th.BooleanType),
+        th.Property("needs_processing", th.BooleanType),
+        th.Property("payment_retry_date_gmt", th.DateTimeType),
+        LINKS_FIELD_SCHEMA,
     ).to_dict()
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
@@ -339,7 +363,8 @@ class SubscriptionsStream(wooStream):
             'next_payment_date_gmt',
             'last_payment_date_gmt',
             'cancelled_date_gmt',
-            'end_date_gmt'
+            'end_date_gmt',
+            'payment_retry_date_gmt'
         ]
         for date_time_field in list_date_fields:
             if date_time_field in row and not row[date_time_field]:
@@ -358,7 +383,7 @@ class SubscriptionOrdersStream(wooStream):
     path = "/subscriptions/{subscription_id}/orders"
     primary_keys = ["order_id"]
     parent_stream_type = SubscriptionsStream
-    state_partitioning_keys = []
+    state_partitioning_keys: list[str] = []
 
     schema = th.PropertiesList(
         th.Property(
