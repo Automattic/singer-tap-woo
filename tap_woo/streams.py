@@ -106,6 +106,7 @@ class RefundsStream(wooStream):
     path = "/orders/{order_id}/refunds"
     primary_keys = ["id"]
     parent_stream_type = OrdersStream
+    state_partitioning_keys = []
 
     schema = th.PropertiesList(
         th.Property("id", th.IntegerType),
@@ -355,8 +356,9 @@ class SubscriptionsStream(wooStream):
 class SubscriptionOrdersStream(wooStream):
     name = "subscription_orders"
     path = "/subscriptions/{subscription_id}/orders"
-    primary_keys = ["subscription_id"]
+    primary_keys = ["order_id"]
     parent_stream_type = SubscriptionsStream
+    state_partitioning_keys = []
 
     schema = th.PropertiesList(
         th.Property(
@@ -367,6 +369,6 @@ class SubscriptionOrdersStream(wooStream):
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
         # Rename the id field to order_id
-        row["order_id"] = row["id"]
-        del row["id"]
+        row["order_id"] = row.pop("id")
+        row["subscription_id"] = (context or {}).get("subscription_id")
         return super().post_process(row, context)

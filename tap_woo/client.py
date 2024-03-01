@@ -50,7 +50,7 @@ class wooStream(RESTStream):
     def get_url_params(self, context, next_page_token):
         self.logger.debug(f"Next page token: {next_page_token}")
         params = {
-            "per_page": 10,
+            "per_page": 100,
             "order": "asc"
         }
         starting_date = self.get_starting_timestamp(context)
