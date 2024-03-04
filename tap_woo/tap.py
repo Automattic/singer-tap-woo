@@ -5,7 +5,6 @@ from __future__ import annotations
 from singer_sdk import Tap
 from singer_sdk import typing as th  # JSON schema typing helpers
 
-# TODO: Import your custom stream types here:
 from tap_woo import streams
 
 
@@ -14,7 +13,6 @@ class Tapwoo(Tap):
 
     name = "tap-woo"
 
-    # TODO: Update this section with the actual config values you expect:
     config_jsonschema = th.PropertiesList(
         th.Property(
             "consumer_key",
@@ -33,6 +31,11 @@ class Tapwoo(Tap):
             "start_date",
             th.DateTimeType,
             description="The earliest record date to sync",
+        ),
+        th.Property(
+            "end_date",
+            th.DateTimeType,
+            description="The latest record date to sync (if not set will sync up to current date)",
         ),
         th.Property(
             "api_url",
@@ -54,7 +57,6 @@ class Tapwoo(Tap):
             streams.RefundsStream(tap=self),
             streams.SubscriptionsStream(tap=self),
             streams.SubscriptionOrdersStream(tap=self),
-            
             # streams.CouponsStream(tap=self),
             # streams.CustomersStream(tap=self),
             # streams.ProductVariationsStream(tap=self),
