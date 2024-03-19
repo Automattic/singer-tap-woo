@@ -388,8 +388,9 @@ class SubscriptionOrdersStream(wooStream):
     schema = th.PropertiesList(
         th.Property(
             "subscription_id", th.IntegerType
-        ),  # This seems to come from the parent stream, although I dont understand how
+        ),
         th.Property("order_id", th.IntegerType),
+        LINE_ITEMS_FIELD_SCHEMA,
     ).to_dict()
 
     def post_process(self, row: dict, context: dict | None = None) -> dict | None:
