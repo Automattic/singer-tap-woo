@@ -138,7 +138,7 @@ LINE_ITEMS_FIELD_SCHEMA = th.Property(
             th.Property(
                 "image",
                 th.ObjectType(
-                    th.Property("id", th.StringType), th.Property("src", th.StringType)
+                    th.Property("id", th.IntegerType), th.Property("src", th.StringType)
                 ),
             ),
             th.Property("parent_name", th.StringType),
