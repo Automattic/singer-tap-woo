@@ -135,12 +135,6 @@ LINE_ITEMS_FIELD_SCHEMA = th.Property(
             METADATA_FIELD_SCHEMA,
             th.Property("sku", th.BooleanType),
             th.Property("price", th.NumberType),
-            th.Property(
-                "image",
-                th.ObjectType(
-                    th.Property("id", th.IntegerType), th.Property("src", th.StringType)
-                ),
-            ),
             th.Property("parent_name", th.StringType),
         )
     ),
