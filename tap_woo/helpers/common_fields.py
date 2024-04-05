@@ -117,9 +117,7 @@ TAX_LINES_FIELD_SCHEMA = th.Property(
 )
 
 
-LINE_ITEMS_FIELD_SCHEMA = th.Property(
-    "line_items",
-    th.ArrayType(
+LINE_ITEMS_ARRAY_TYPE = th.ArrayType(
         th.ObjectType(
             th.Property("id", th.IntegerType),
             th.Property("name", th.StringType),
@@ -137,7 +135,12 @@ LINE_ITEMS_FIELD_SCHEMA = th.Property(
             th.Property("price", th.NumberType),
             th.Property("parent_name", th.StringType),
         )
-    ),
+    )
+
+
+LINE_ITEMS_FIELD_SCHEMA = th.Property(
+    "line_items",
+    LINE_ITEMS_ARRAY_TYPE
 )
 
 LINKS_FIELD_SCHEMA = th.Property(
