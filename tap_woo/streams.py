@@ -17,6 +17,7 @@ from tap_woo.helpers.common_fields import (
     METADATA_FIELD_SCHEMA,
     LINE_ITEMS_FIELD_SCHEMA,
     LINKS_FIELD_SCHEMA,
+    LINE_ITEMS_ARRAY_TYPE,
 )
 
 
@@ -348,7 +349,7 @@ class SubscriptionsStream(wooStream):
         th.Property("end_date_gmt", th.DateTimeType),
         th.Property("resubscribed_from", th.StringType),
         th.Property("resubscribed_subscription", th.StringType),
-        th.Property("removed_line_items", th.ArrayType(th.ObjectType(LINE_ITEMS_FIELD_SCHEMA))),
+        th.Property("removed_line_items", LINE_ITEMS_ARRAY_TYPE),
         th.Property("payment_url", th.StringType),
         th.Property("is_editable", th.BooleanType),
         th.Property("needs_payment", th.BooleanType),
