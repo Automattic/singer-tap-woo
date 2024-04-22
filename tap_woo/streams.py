@@ -336,6 +336,11 @@ class ProductVariationsStream(wooStream):
         METADATA_FIELD_SCHEMA,
     ).to_dict()
 
+    def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        # Add in the product id
+        row["product_id"] = (context or {}).get("product_id")
+        return super().post_process(row, context)
+
 class SubscriptionsStream(wooStream):
     name = "subscriptions"
     path = "/subscriptions"
