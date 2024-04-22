@@ -275,11 +275,15 @@ class ProductsStream(wooStream):
         }
 
 class ProductVariationsStream(wooStream):
+    """Product Variations Stream."""
+
     name = "product_variations"
     path = "/products/{product_id}/variations"
     primary_keys = ["id"]
     parent_stream_type = ProductsStream
     state_partitioning_keys: list[str] = []
+
+
 
     schema = th.PropertiesList(
         th.Property("id", th.IntegerType),
