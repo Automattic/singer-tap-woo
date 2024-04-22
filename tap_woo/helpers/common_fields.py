@@ -161,3 +161,24 @@ LINKS_FIELD_SCHEMA = th.Property(
         ),
     ),
 )
+
+DIMENSIONS_FIELD_SCHEMA = th.Property(
+    "dimensions",
+    th.ObjectType(
+        th.Property("length", th.StringType),
+        th.Property("width", th.StringType),
+        th.Property("height", th.StringType),
+    ),
+)
+
+IMAGE_OBJECT_TYPE = th.Property(
+    th.ObjectType(
+        th.Property("id", th.IntegerType),
+        th.Property("date_created", th.DateTimeType),
+        th.Property("date_created_gmt", th.DateTimeType),
+        th.Property("date_modified", th.DateTimeType),
+        th.Property("date_modified_gmt", th.DateTimeType),
+        th.Property("src", th.StringType),
+        th.Property("name", th.StringType),
+        th.Property("alt", th.StringType),
+    )
