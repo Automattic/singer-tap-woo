@@ -274,25 +274,6 @@ class ProductsStream(wooStream):
             "product_id": record["id"],
         }
 
-# download_limit	integer	Number of times downloadable files can be downloaded after purchase. Default is -1.
-# download_expiry	integer	Number of days until access to downloadable files expires. Default is -1.
-# tax_status	string	Tax status. Options: taxable, shipping and none. Default is taxable.
-# tax_class	string	Tax class.
-# manage_stock	boolean	Stock management at variation level. Default is false.
-# stock_quantity	integer	Stock quantity.
-# stock_status	string	Controls the stock status of the product. Options: instock, outofstock, onbackorder. Default is instock.
-# backorders	string	If managing stock, this controls if backorders are allowed. Options: no, notify and yes. Default is no.
-# backorders_allowed	boolean	Shows if backorders are allowed.READ-ONLY
-# backordered	boolean	Shows if the variation is on backordered.READ-ONLY
-# weight	string	Variation weight.
-# dimensions	object	Variation dimensions. See Product variation - Dimensions properties
-# shipping_class	string	Shipping class slug.
-# shipping_class_id	string	Shipping class ID.READ-ONLY
-# image	object	Variation image data. See Product variation - Image properties
-# attributes	array	List of attributes. See Product variation - Attributes properties
-# menu_order	integer	Menu order, used to custom sort products.
-# meta_data	array	Meta data. See Product variation - Meta data properties
-
 class ProductVariationsStream(wooStream):
     name = "product_variations"
     path = "/products/{product_id}/variations"
