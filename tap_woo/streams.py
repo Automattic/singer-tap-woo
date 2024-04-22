@@ -283,10 +283,9 @@ class ProductVariationsStream(wooStream):
     parent_stream_type = ProductsStream
     state_partitioning_keys: list[str] = []
 
-
-
     schema = th.PropertiesList(
         th.Property("id", th.IntegerType),
+        th.Property("product_id", th.IntegerType),
         th.Property("date_created", th.DateTimeType),
         th.Property("date_created_gmt", th.DateTimeType),
         th.Property("date_modified", th.DateTimeType),
