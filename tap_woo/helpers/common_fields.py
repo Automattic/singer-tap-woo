@@ -181,4 +181,5 @@ IMAGE_OBJECT_TYPE = th.Property(
         th.Property("src", th.StringType),
         th.Property("name", th.StringType),
         th.Property("alt", th.StringType),
-    )
+    ),
+)
