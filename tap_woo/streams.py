@@ -317,7 +317,7 @@ class ProductVariationsStream(wooStream):
         DIMENSIONS_FIELD_SCHEMA,
         th.Property("shipping_class", th.StringType),
         th.Property("shipping_class_id", th.IntegerType),
-        IMAGE_OBJECT_TYPE,
+        th.Property("image", IMAGE_OBJECT_TYPE),
         th.Property(
             "attributes",
             th.ArrayType(
