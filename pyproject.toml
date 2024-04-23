@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "tap-woo"
-version = "0.1.4"
+version = "0.1.5"
 description = "`tap-woo` is a Singer tap for woo, built with the Meltano Singer SDK."
 readme = "README.md"
 authors = ["Peter Butler <peterbutler@automattic.com>"]
