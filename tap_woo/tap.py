@@ -53,13 +53,13 @@ class Tapwoo(Tap):
         """
         return [
             streams.ProductsStream(tap=self),
+            streams.ProductVariationsStream(tap=self),
             streams.OrdersStream(tap=self),
             streams.RefundsStream(tap=self),
             streams.SubscriptionsStream(tap=self),
             streams.SubscriptionOrdersStream(tap=self),
             # streams.CouponsStream(tap=self),
             # streams.CustomersStream(tap=self),
-            # streams.ProductVariationsStream(tap=self),
             # streams.RefundsStream(tap=self),
             # streams.ShippingZonesStream(tap=self),
             # streams.ShippingMethodsStream(tap=self),

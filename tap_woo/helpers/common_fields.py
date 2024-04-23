@@ -15,7 +15,6 @@ METADATA_FIELD_SCHEMA = th.Property(
     ),
 )
 
-
 BILLING_FIELD_SCHEMA = th.Property(
     "billing",
     th.ObjectType(
@@ -32,7 +31,6 @@ BILLING_FIELD_SCHEMA = th.Property(
         th.Property("phone", th.StringType),
     ),
 )
-
 
 SHIPPING_FIELD_SCHEMA = th.Property(
     "shipping",
@@ -88,12 +86,10 @@ TAXES_ARRAY_TYPE = th.ArrayType(
     )
 )
 
-
 TAXES_FIELD_SCHEMA = th.Property(
     "taxes",
     TAXES_ARRAY_TYPE,
 )
-
 
 FEE_LINES_FIELD_SCHEMA = th.Property(
     "fee_lines",
@@ -110,33 +106,30 @@ FEE_LINES_FIELD_SCHEMA = th.Property(
     ),
 )
 
-
 TAX_LINES_FIELD_SCHEMA = th.Property(
     "tax_lines",
     TAXES_ARRAY_TYPE,
 )
 
-
 LINE_ITEMS_ARRAY_TYPE = th.ArrayType(
-        th.ObjectType(
-            th.Property("id", th.IntegerType),
-            th.Property("name", th.StringType),
-            th.Property("product_id", th.IntegerType),
-            th.Property("variation_id", th.IntegerType),
-            th.Property("quantity", th.NumberType),
-            th.Property("tax_class", th.StringType),
-            th.Property("subtotal", th.StringType),
-            th.Property("subtotal_tax", th.StringType),
-            th.Property("total", th.StringType),
-            th.Property("total_tax", th.StringType),
-            TAXES_FIELD_SCHEMA,
-            METADATA_FIELD_SCHEMA,
-            th.Property("sku", th.BooleanType),
-            th.Property("price", th.NumberType),
-            th.Property("parent_name", th.StringType),
-        )
+    th.ObjectType(
+        th.Property("id", th.IntegerType),
+        th.Property("name", th.StringType),
+        th.Property("product_id", th.IntegerType),
+        th.Property("variation_id", th.IntegerType),
+        th.Property("quantity", th.NumberType),
+        th.Property("tax_class", th.StringType),
+        th.Property("subtotal", th.StringType),
+        th.Property("subtotal_tax", th.StringType),
+        th.Property("total", th.StringType),
+        th.Property("total_tax", th.StringType),
+        TAXES_FIELD_SCHEMA,
+        METADATA_FIELD_SCHEMA,
+        th.Property("sku", th.BooleanType),
+        th.Property("price", th.NumberType),
+        th.Property("parent_name", th.StringType),
     )
-
+)
 
 LINE_ITEMS_FIELD_SCHEMA = th.Property(
     "line_items",
@@ -160,4 +153,24 @@ LINKS_FIELD_SCHEMA = th.Property(
             "customer", th.ArrayType(th.ObjectType(th.Property("href", th.StringType)))
         ),
     ),
+)
+
+DIMENSIONS_FIELD_SCHEMA = th.Property(
+    "dimensions",
+    th.ObjectType(
+        th.Property("length", th.StringType),
+        th.Property("width", th.StringType),
+        th.Property("height", th.StringType),
+    ),
+)
+
+IMAGE_OBJECT_TYPE = th.ObjectType(
+    th.Property("id", th.IntegerType),
+    th.Property("date_created", th.DateTimeType),
+    th.Property("date_created_gmt", th.DateTimeType),
+    th.Property("date_modified", th.DateTimeType),
+    th.Property("date_modified_gmt", th.DateTimeType),
+    th.Property("src", th.StringType),
+    th.Property("name", th.StringType),
+    th.Property("alt", th.StringType),
 )

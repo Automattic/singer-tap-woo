@@ -18,6 +18,8 @@ from tap_woo.helpers.common_fields import (
     LINE_ITEMS_FIELD_SCHEMA,
     LINKS_FIELD_SCHEMA,
     LINE_ITEMS_ARRAY_TYPE,
+    DIMENSIONS_FIELD_SCHEMA,
+    IMAGE_OBJECT_TYPE,
 )
 
 
@@ -192,14 +194,7 @@ class ProductsStream(wooStream):
         th.Property("backordered", th.BooleanType),
         th.Property("sold_individually", th.BooleanType),
         th.Property("weight", th.StringType),
-        th.Property(
-            "dimensions",
-            th.ObjectType(
-                th.Property("length", th.StringType),
-                th.Property("width", th.StringType),
-                th.Property("height", th.StringType),
-            ),
-        ),
+        DIMENSIONS_FIELD_SCHEMA,
         th.Property("shipping_required", th.BooleanType),
         th.Property("shipping_taxable", th.BooleanType),
         th.Property("shipping_class", th.StringType),
@@ -235,16 +230,7 @@ class ProductsStream(wooStream):
         th.Property(
             "images",
             th.ArrayType(
-                th.ObjectType(
-                    th.Property("id", th.IntegerType),
-                    th.Property("date_created", th.DateTimeType),
-                    th.Property("date_created_gmt", th.DateTimeType),
-                    th.Property("date_modified", th.DateTimeType),
-                    th.Property("date_modified_gmt", th.DateTimeType),
-                    th.Property("src", th.StringType),
-                    th.Property("name", th.StringType),
-                    th.Property("alt", th.StringType),
-                )
+                IMAGE_OBJECT_TYPE
             ),
         ),
         th.Property(
@@ -282,6 +268,77 @@ class ProductsStream(wooStream):
         LINKS_FIELD_SCHEMA,
     ).to_dict()
 
+    def get_child_context(self, record: dict, context: Optional[dict]) -> dict:
+        """Return a context dictionary for child streams."""
+        return {
+            "product_id": record["id"],
+        }
+
+class ProductVariationsStream(wooStream):
+    """Product Variations Stream."""
+
+    name = "product_variations"
+    path = "/products/{product_id}/variations"
+    primary_keys = ["id"]
+    parent_stream_type = ProductsStream
+    state_partitioning_keys: list[str] = []
+
+    schema = th.PropertiesList(
+        th.Property("id", th.IntegerType),
+        th.Property("product_id", th.IntegerType),
+        th.Property("date_created", th.DateTimeType),
+        th.Property("date_created_gmt", th.DateTimeType),
+        th.Property("date_modified", th.DateTimeType),
+        th.Property("date_modified_gmt", th.DateTimeType),
+        th.Property("description", th.StringType),
+        th.Property("permalink", th.StringType),
+        th.Property("sku", th.StringType),
+        th.Property("price", th.StringType),
+        th.Property("regular_price", th.StringType),
+        th.Property("sale_price", th.StringType),
+        th.Property("date_on_sale_from", th.DateTimeType),
+        th.Property("date_on_sale_from_gmt", th.DateTimeType),
+        th.Property("date_on_sale_to", th.DateTimeType),
+        th.Property("date_on_sale_to_gmt", th.DateTimeType),
+        th.Property("on_sale", th.BooleanType),
+        th.Property("status", th.StringType),
+        th.Property("purchaseable", th.BooleanType),
+        th.Property("virtual", th.BooleanType),
+        th.Property("downloadable", th.BooleanType),
+        th.Property("downloads", th.ArrayType(th.StringType)),
+        th.Property("download_limit", th.IntegerType),
+        th.Property("download_expiry", th.IntegerType),
+        th.Property("tax_status", th.StringType),
+        th.Property("tax_class", th.StringType),
+        th.Property("manage_stock", th.BooleanType),
+        th.Property("stock_quantity", th.IntegerType),
+        th.Property("stock_status", th.StringType),
+        th.Property("backorders", th.StringType),
+        th.Property("backorders_allowed", th.BooleanType),
+        th.Property("backordered", th.BooleanType),
+        th.Property("weight", th.StringType),
+        DIMENSIONS_FIELD_SCHEMA,
+        th.Property("shipping_class", th.StringType),
+        th.Property("shipping_class_id", th.IntegerType),
+        th.Property("image", IMAGE_OBJECT_TYPE),
+        th.Property(
+            "attributes",
+            th.ArrayType(
+                th.ObjectType(
+                    th.Property("id", th.IntegerType),
+                    th.Property("name", th.StringType),
+                    th.Property("option", th.StringType),
+                )
+            ),
+        ),
+        th.Property("menu_order", th.IntegerType),
+        METADATA_FIELD_SCHEMA,
+    ).to_dict()
+
+    def post_process(self, row: dict, context: dict | None = None) -> dict | None:
+        # Add in the product id
+        row["product_id"] = (context or {}).get("product_id")
+        return super().post_process(row, context)
 
 class SubscriptionsStream(wooStream):
     name = "subscriptions"
