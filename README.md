@@ -24,6 +24,13 @@ pipx install git+https://github.com/ORG_NAME/tap-woo.git@main
 
 -->
 
+`constraints.txt` generation:
+
+```bash
+$ poetry self add poetry-plugin-export
+$ poetry export --output constraints.txt --without-hashes
+```
+
 ## Configuration
 
 ### Accepted Config Options
