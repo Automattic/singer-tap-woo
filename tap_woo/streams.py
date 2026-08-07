@@ -42,10 +42,10 @@ class OrdersStream(wooStream):
         th.Property("status", th.StringType),
         th.Property("currency", th.StringType),
         th.Property("currency_symbol", th.StringType),
-        th.Property("date_created", th.DateTimeType),
-        th.Property("date_created_gmt", th.DateTimeType),
-        th.Property("date_modified", th.DateTimeType),
-        th.Property("date_modified_gmt", th.DateTimeType),
+        th.Property("date_created", th.DateTimeType, required=True),
+        th.Property("date_created_gmt", th.DateTimeType, required=True),
+        th.Property("date_modified", th.DateTimeType, required=True),
+        th.Property("date_modified_gmt", th.DateTimeType, required=True),
         th.Property("discount_total", th.StringType),
         th.Property("discount_tax", th.StringType),
         th.Property("shipping_total", th.StringType),
@@ -117,7 +117,7 @@ class RefundsStream(wooStream):
     state_partitioning_keys: list[str] = []
 
     schema = th.PropertiesList(
-        th.Property("id", th.IntegerType),
+        th.Property("id", th.IntegerType, required=True),
         th.Property("original_order_id", th.IntegerType),
         th.Property("date_created", th.DateTimeType),
         th.Property("date_created_gmt", th.DateTimeType),
@@ -149,7 +149,7 @@ class ProductsStream(wooStream):
     is_sorted = False
 
     schema = th.PropertiesList(
-        th.Property("id", th.IntegerType),
+        th.Property("id", th.IntegerType, required=True),
         th.Property("name", th.StringType),
         th.Property("slug", th.StringType),
         th.Property("permalink", th.StringType),
@@ -348,16 +348,16 @@ class SubscriptionsStream(wooStream):
     is_sorted = False
 
     schema = th.PropertiesList(
-        th.Property("id", th.IntegerType),
+        th.Property("id", th.IntegerType, required=True),
         th.Property("parent_id", th.IntegerType),
-        th.Property("status", th.StringType),
+        th.Property("status", th.StringType, required=True),
         th.Property("currency", th.StringType),
         th.Property("version", th.StringType),
         th.Property("prices_include_tax", th.BooleanType),
-        th.Property("date_created", th.DateTimeType),
-        th.Property("date_modified", th.DateTimeType),
-        th.Property("date_created_gmt", th.DateTimeType),
-        th.Property("date_modified_gmt", th.DateTimeType),
+        th.Property("date_created", th.DateTimeType, required=True),
+        th.Property("date_modified", th.DateTimeType, required=True),
+        th.Property("date_created_gmt", th.DateTimeType, required=True),
+        th.Property("date_modified_gmt", th.DateTimeType, required=True),
         th.Property("discount_total", th.StringType),
         th.Property("discount_tax", th.StringType),
         th.Property("shipping_total", th.StringType),
@@ -365,7 +365,7 @@ class SubscriptionsStream(wooStream):
         th.Property("cart_tax", th.StringType),
         th.Property("total", th.StringType),
         th.Property("total_tax", th.StringType),
-        th.Property("customer_id", th.IntegerType),
+        th.Property("customer_id", th.IntegerType, required=True),
         th.Property("order_key", th.StringType),
         BILLING_FIELD_SCHEMA,
         SHIPPING_FIELD_SCHEMA,
@@ -373,7 +373,7 @@ class SubscriptionsStream(wooStream):
         th.Property("payment_method_title", th.StringType),
         th.Property("customer_ip_address", th.StringType),
         th.Property("customer_user_agent", th.StringType),
-        th.Property("created_via", th.StringType),
+        th.Property("created_via", th.StringType, required=True),
         th.Property("customer_note", th.StringType),
         th.Property("date_completed", th.DateTimeType),
         th.Property("date_paid", th.DateTimeType),
@@ -396,9 +396,9 @@ class SubscriptionsStream(wooStream):
         ),
         th.Property("date_completed_gmt", th.DateTimeType),
         th.Property("date_paid_gmt", th.DateTimeType),
-        th.Property("billing_period", th.StringType),
-        th.Property("billing_interval", th.StringType),
-        th.Property("start_date_gmt", th.DateTimeType),
+        th.Property("billing_period", th.StringType, required=True),
+        th.Property("billing_interval", th.StringType, required=True),
+        th.Property("start_date_gmt", th.DateTimeType, required=True),
         th.Property("trial_end_date_gmt", th.DateTimeType),
         th.Property("next_payment_date_gmt", th.DateTimeType),
         th.Property("last_payment_date_gmt", th.DateTimeType),
@@ -445,9 +445,8 @@ class SubscriptionOrdersStream(wooStream):
 
     schema = th.PropertiesList(
         th.Property(
-            "subscription_id", th.IntegerType
-        ),
-        th.Property("order_id", th.IntegerType),
+            "subscription_id", th.IntegerType, required=True),
+        th.Property("order_id", th.IntegerType, required=True),
         LINE_ITEMS_FIELD_SCHEMA,
     ).to_dict()
 
